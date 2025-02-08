@@ -25,7 +25,7 @@ const LandingPage = () => {
         Discover albums, photos, and user collections all in one place.
       </p>
       <Button variant="primary" size="lg" onClick={handleLogin}>
-          Login with Google
+        Login with Google
       </Button>
     </Container>
   );
