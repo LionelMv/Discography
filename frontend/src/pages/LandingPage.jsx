@@ -24,13 +24,9 @@ const LandingPage = () => {
       <p className="lead">
         Discover albums, photos, and user collections all in one place.
       </p>
-      {user ? (
-        <p className="text-success">Logged in as {user.displayName}</p>
-      ) : (
-        <Button variant="primary" size="lg" onClick={handleLogin}>
+      <Button variant="primary" size="lg" onClick={handleLogin}>
           Login with Google
       </Button>
-      )}
     </Container>
   );
 };
