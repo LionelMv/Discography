@@ -5,7 +5,9 @@ from .views import (
     AlbumListView,
     AlbumDetailView,
     PhotoListView,
-    PhotoDetailView
+    PhotoDetailView,
+    UserAlbumsView,
+    AlbumPhotosView
 )
 
 
@@ -18,4 +20,9 @@ urlpatterns = [
 
     path('photos/', PhotoListView.as_view(), name='photo-list'),
     path('photos/<int:pk>/', PhotoDetailView.as_view(), name='photo-detail'),
+
+    path("users/<int:user_id>/albums/", UserAlbumsView.as_view(),
+         name="user-albums"),
+    path("albums/<int:album_id>/photos/", AlbumPhotosView.as_view(),
+         name="album-photos"),
 ]

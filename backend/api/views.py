@@ -37,3 +37,19 @@ class PhotoListView(generics.ListCreateAPIView):
 class PhotoDetailView(generics.RetrieveUpdateAPIView):
     queryset = Photo.objects.all()
     serializer_class = PhotoSerializer
+
+
+class UserAlbumsView(generics.ListAPIView):
+    serializer_class = AlbumSerializer
+
+    def get_queryset(self):
+        user_id = self.kwargs["user_id"]
+        return Album.objects.filter(user_id=user_id)
+
+
+class AlbumPhotosView(generics.ListAPIView):
+    serializer_class = PhotoSerializer
+
+    def get_queryset(self):
+        album_id = self.kwargs["album_id"]
+        return Photo.objects.filter(album_id=album_id)

@@ -14,9 +14,14 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class AlbumSerializer(serializers.ModelSerializer):
+    photo_count = serializers.SerializerMethodField()
+
     class Meta:
         model = Album
-        fields = ['id', 'user', 'title']
+        fields = ['id', 'user', 'title', 'photo_count']
+
+    def get_photo_count(self, obj):
+        return obj.photos.count()
 
 
 class PhotoSerializer(serializers.ModelSerializer):
