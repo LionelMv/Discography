@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import axios from "axios";
 import { Container, Row, Col, Card } from "react-bootstrap";
+import BackButton from "../components/BackButton";
 
 const AlbumPage = () => {
   const { albumId } = useParams();
@@ -53,6 +54,7 @@ const AlbumPage = () => {
       ) : (
         <p className="text-center">Loading album details...</p>
       )}
+      <BackButton />
     </Container>
   );
 };
