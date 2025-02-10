@@ -6,15 +6,18 @@ import { toast } from "react-toastify";
 
 const LandingPage = () => {
   useEffect(() => {
-    if (localStorage.getItem("loggedOut") === "true") {
+    const loggedOut = localStorage.getItem("loggedOut");
+    const redirected = localStorage.getItem("redirected");
+
+    if (loggedOut === "true") {
       toast.info("You have been logged out.", {
         toastId: "logout-info",
       });
-    } else if (localStorage.getItem("redirected") === "true" && localStorage.getItem("loggedOut") !== "true") {
+      localStorage.removeItem("loggedOut"); // Clear flag after showing toast
+    } else if (redirected === "true") {
       toast.warn("You need to log in to access that page!", {
         toastId: "auth-warning",
       });
-      localStorage.removeItem("loggedOut"); // Clear flag after showing toast
       localStorage.removeItem("redirected"); // Clear flag after showing toast
     }
   }, []);
