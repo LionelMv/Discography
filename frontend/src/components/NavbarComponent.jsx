@@ -8,11 +8,10 @@ const NavbarComponent = () => {
 
   const handleLogout = async () => {
     await logOut();
-    localStorage.setItem("loggedOut", "true"); // Set logout flag
     navigate("/");
   };
 
-  //if (!user) return null; // Hide if not logged in
+  if (!user) return null; // Hide if not logged in
 
   return (
     <Navbar bg="dark" variant="dark" expand="lg">
@@ -25,13 +24,9 @@ const NavbarComponent = () => {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
 
         <Navbar.Collapse id="basic-navbar-nav" className="justify-content-end">
-          <Nav>
-            {user && (
-              <Button variant="outline-light" onClick={handleLogout}>
-                Log Out
-              </Button>
-            )}
-          </Nav>
+          <Button variant="outline-light" onClick={handleLogout}>
+            Log Out
+          </Button>
         </Navbar.Collapse>
       </Container>
     </Navbar>

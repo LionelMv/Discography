@@ -25,6 +25,8 @@ export const AuthProvider = ({ children }) => {
     try {
       await logOut();
       setUser(null); // Ensure user state is cleared
+      localStorage.setItem("loggedOut", "true"); // Set logged out flag
+      localStorage.removeItem("redirected"); // Clear redirected flag
     } catch (error) {
       console.error("Logout failed:", error.message);
     }
