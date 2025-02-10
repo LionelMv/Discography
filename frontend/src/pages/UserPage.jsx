@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
+import BackButton from "../components/BackButton";
 import axios from "axios";
 
 function UserPage() {
@@ -43,11 +44,7 @@ function UserPage() {
         </ul>
       )}
 
-      <div className="text-center mt-3">
-        <Link to="/home" className="btn btn-primary">
-          Back to Home
-        </Link>
-      </div>
+      <BackButton />
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import BackButton from "../components/BackButton";
 
 const PhotoPage = () => {
   const { photoId } = useParams(); // Get photo ID from URL
@@ -61,6 +62,7 @@ const PhotoPage = () => {
           {photo.title} (Click to edit)
         </h3>
       )}
+      <BackButton />
     </div>
   );
 };
