@@ -1,5 +1,6 @@
+import React from "react";
 import { useAuth } from "../AuthContext";
-import { Navbar, Button, Container, Nav } from "react-bootstrap";
+import { Navbar, Button, Container} from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 
 const NavbarComponent = () => {

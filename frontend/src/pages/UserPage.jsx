@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import BackButton from "../components/BackButton";
 import axios from "axios";
@@ -29,7 +29,7 @@ function UserPage() {
 
   return (
     <div className="container mt-4">
-      <h2 className="text-center">{user.name}'s Albums</h2>
+      <h2 className="text-center">{`${user.name}'s Albums`}</h2>
       <p className="text-center text-muted">{user.email}</p>
 
       {albums.length === 0 ? (
