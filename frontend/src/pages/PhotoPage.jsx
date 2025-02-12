@@ -61,7 +61,9 @@ const PhotoPage = () => {
             value={newTitle}
             onChange={(e) => setNewTitle(e.target.value)}
           />
-          <button onClick={handleUpdateTitle}>Save</button>
+          <button onClick={handleUpdateTitle} disabled={!newTitle.trim()}>
+            Save
+          </button>
           <button onClick={() => setIsEditing(false)}>Cancel</button>
         </div>
       ) : (
