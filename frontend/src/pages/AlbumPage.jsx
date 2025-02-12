@@ -1,26 +1,30 @@
-import React, { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
-import axios from "axios";
-import { Container, Row, Col, Card } from "react-bootstrap";
-import BackButton from "../components/BackButton";
+import React, { useEffect, useState } from 'react';
+import { Link, useParams } from 'react-router-dom';
+import axios from 'axios';
+import { Container, Row, Col, Card } from 'react-bootstrap';
+import BackButton from '../components/BackButton';
 
 const AlbumPage = () => {
   const { albumId } = useParams();
   const [album, setAlbum] = useState(null);
   const [photos, setPhotos] = useState([]);
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   useEffect(() => {
-    // Fetch album details
-    axios
-      .get(`http://127.0.0.1:8000/api/albums/${albumId}/`)
-      .then((response) => setAlbum(response.data))
-      .catch((error) => console.error("Error fetching album:", error));
+    const fetchAlbumData = async () => {
+      try {
+        const [albumResponse, photosResponse] = await Promise.all([
+          axios.get(`${API_BASE_URL}/api/albums/${albumId}/`),
+          axios.get(`${API_BASE_URL}/api/albums/${albumId}/photos/`),
+        ]);
+        setAlbum(albumResponse.data);
+        setPhotos(photosResponse.data);
+      } catch (error) {
+        console.error('Error fetching album or photos:', error);
+      }
+    };
 
-    // Fetch photos in the album
-    axios
-      .get(`http://127.0.0.1:8000/api/albums/${albumId}/photos/`)
-      .then((response) => setPhotos(response.data))
-      .catch((error) => console.error("Error fetching photos:", error));
+    fetchAlbumData();
   }, [albumId]);
 
   return (
@@ -40,7 +44,7 @@ const AlbumPage = () => {
                       variant="top"
                       src={photo.image_url}
                       alt={photo.title}
-                      style={{ cursor: "pointer" }}
+                      style={{ cursor: 'pointer' }}
                     />
                   </Link>
                   <Card.Body>

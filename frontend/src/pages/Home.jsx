@@ -1,23 +1,27 @@
-import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import axios from "axios";
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import axios from 'axios';
 
 function Home() {
   const [users, setUsers] = useState([]);
   const [albums, setAlbums] = useState([]);
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   useEffect(() => {
-    // Fetch users
-    axios
-      .get("http://127.0.0.1:8000/api/users/")
-      .then((response) => setUsers(response.data))
-      .catch((error) => console.error("Error fetching users:", error));
+    const fetchData = async () => {
+      try {
+        const [usersResponse, albumsResponse] = await Promise.all([
+          axios.get(`${API_BASE_URL}/api/users/`),
+          axios.get(`${API_BASE_URL}/api/albums/`),
+        ]);
+        setUsers(usersResponse.data);
+        setAlbums(albumsResponse.data);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
 
-    // Fetch albums
-    axios
-      .get("http://127.0.0.1:8000/api/albums/")
-      .then((response) => setAlbums(response.data))
-      .catch((error) => console.error("Error fetching albums:", error));
+    fetchData();
   }, []);
 
   // Count albums per user
