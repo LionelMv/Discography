@@ -1,27 +1,33 @@
-import React, { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
-import BackButton from "../components/BackButton";
-import axios from "axios";
+import React, { useState, useEffect } from 'react';
+import { useParams, Link } from 'react-router-dom';
+import BackButton from '../components/BackButton';
+import axios from 'axios';
 
 function UserPage() {
   const { userId } = useParams();
   const [user, setUser] = useState(null);
   const [albums, setAlbums] = useState([]);
   const [loading, setLoading] = useState(true);
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   useEffect(() => {
-    // Fetch user details
-    axios
-      .get(`http://127.0.0.1:8000/api/users/${userId}/`)
-      .then((response) => setUser(response.data))
-      .catch((error) => console.error("Error fetching user:", error));
+    const fetchUserData = async () => {
+      try {
+        const [userResponse, albumsResponse] = await Promise.all([
+          axios.get(`${API_BASE_URL}/api/users/${userId}/`),
+          axios.get(`${API_BASE_URL}/api/users/${userId}/albums/`),
+        ]);
 
-    // Fetch albums for this user
-    axios
-      .get(`http://127.0.0.1:8000/api/users/${userId}/albums/`)
-      .then((response) => setAlbums(response.data))
-      .catch((error) => console.error("Error fetching albums:", error))
-      .finally(() => setLoading(false));
+        setUser(userResponse.data);
+        setAlbums(albumsResponse.data);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUserData();
   }, [userId]);
 
   if (loading) return <div className="text-center mt-5">Loading...</div>;
