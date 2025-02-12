@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Container, Button } from "react-bootstrap";
 import { signInWithGoogle } from "../firebaseConfig";
@@ -22,14 +22,11 @@ const LandingPage = () => {
     }
   }, []);
 
-  const [user, setUser] = useState(null);
-
   const navigate = useNavigate();
 
   const handleLogin = async () => {
     try {
-      const result = await signInWithGoogle();
-      setUser(result.user);
+      await signInWithGoogle();
       navigate("/home"); // Redirect after login
     } catch (error) {
       console.error("Login Error:", error);
