@@ -18,7 +18,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
-          python-version: 3.10
+          python-version: 3.12
 
       - name: Install Backend Dependencies
         run: |
@@ -59,7 +59,7 @@ jobs:
         with:
           node-version: 18
           cache: "npm"
-          cache-dependency-path: frontend/package-lock.json # Cache frontend dependencies
+          cache-dependency-path: frontend/package-lock.json
 
       - name: Install Frontend Dependencies
         run: npm install
@@ -68,6 +68,16 @@ jobs:
       - name: Run Frontend Lint
         run: npm run lint
         working-directory: frontend
+      
+      - name: Set up environment variables
+        run: |
+          echo "VITE_FIREBASE_API_KEY=${{ secrets.VITE_FIREBASE_API_KEY }}" >> $GITHUB_ENV
+          echo "VITE_FIREBASE_AUTH_DOMAIN=${{ secrets.VITE_FIREBASE_AUTH_DOMAIN }}" >> $GITHUB_ENV
+          echo "VITE_FIREBASE_PROJECT_ID=${{ secrets.VITE_FIREBASE_PROJECT_ID }}" >> $GITHUB_ENV
+          echo "VITE_FIREBASE_STORAGE_BUCKET=${{ secrets.VITE_FIREBASE_STORAGE_BUCKET }}" >> $GITHUB_ENV
+          echo "VITE_FIREBASE_MESSAGING_SENDER_ID=${{ secrets.VITE_FIREBASE_MESSAGING_SENDER_ID }}" >> $GITHUB_ENV
+          echo "VITE_FIREBASE_APP_ID=${{ secrets.VITE_FIREBASE_APP_ID }}" >> $GITHUB_ENV
+          echo "VITE_FIREBASE_MEASUREMENT_ID=${{ secrets.VITE_FIREBASE_MEASUREMENT_ID }}" >> $GITHUB_ENV
 
       - name: Run Frontend Tests
         run: npm test
