@@ -2,9 +2,12 @@ import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Container, Button } from "react-bootstrap";
 import { signInWithGoogle } from "../firebaseConfig";
+import { useAuth } from '../AuthContext';
 import { toast } from "react-toastify";
 
 const LandingPage = () => {
+   const { user } = useAuth();
+
   useEffect(() => {
     const loggedOut = localStorage.getItem("loggedOut");
     const redirected = localStorage.getItem("redirected");
@@ -39,7 +42,7 @@ const LandingPage = () => {
       <p className="lead">
         Discover photos, albums and user collections all in one place.
       </p>
-      <Button variant="primary" size="lg" onClick={handleLogin}>
+      <Button variant="primary" size="lg" onClick={handleLogin} hidden={!!user}>
         Login with Google
       </Button>
     </Container>
