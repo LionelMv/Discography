@@ -116,7 +116,7 @@ jobs:
         run: npm install -g vercel
 
       - name: Deploy Frontend to Vercel
-        run: curl -X POST ${{ secrets.VERCEL_DEPLOY_HOOK }} --prod --yes
+        run: curl -X POST ${{ secrets.VERCEL_DEPLOY_HOOK }}
         working-directory: frontend
 
   deploy-backend:
