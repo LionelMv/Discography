@@ -94,24 +94,36 @@ jobs:
     name: Deploy Frontend to Vercel
     needs: frontend-tests  # Runs only if frontend tests pass
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Install Frontend Dependencies
+        run: npm install
+        working-directory: frontend
+
+      - name: Verify Vite Installation
+        run: npx vite --version
+        working-directory: frontend
+
+      - name: Build Frontend
+        run: npx vite build
+        working-directory: frontend
+
       - name: Install Vercel CLI
         run: npm install -g vercel
 
       - name: Deploy Frontend to Vercel
-        run: vercel --token=${{ secrets.VERCEL_TOKEN }} --prod --yes
+        run: curl -X POST ${{ secrets.VERCEL_DEPLOY_HOOK }} --prod --yes
         working-directory: frontend
 
   deploy-backend:
     name: Deploy Backend to Render
     needs: backend-tests  # Runs only if backend tests pass
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
 
     steps:
       - name: Checkout repository
