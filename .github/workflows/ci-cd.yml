@@ -102,6 +102,18 @@ jobs:
 
       - name: Install Vercel CLI
         run: npm install -g vercel
+      
+      - name: Install Frontend Dependencies
+        run: npm install
+        working-directory: frontend
+
+      - name: Verify Vite Installation
+        run: npx vite --version
+        working-directory: frontend
+
+      - name: Build Frontend
+        run: npx vite build
+        working-directory: frontend
 
       - name: Deploy Frontend to Vercel
         run: vercel --token=${{ secrets.VERCEL_TOKEN }} --prod --yes
