@@ -1,0 +1,121 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  backend-tests:
+    name: Backend - Django Lint & Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.12
+
+      - name: Install Backend Dependencies
+        run: |
+          python -m venv venv
+          source venv/bin/activate
+          pip install --upgrade pip
+          pip install -r requirements.txt
+        working-directory: backend
+
+      - name: Set up environment variables
+        run: |
+          echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> $GITHUB_ENV
+          echo "DEBUG=${{ secrets.DEBUG }}" >> $GITHUB_ENV
+          echo "ALLOWED_HOSTS=${{ secrets.ALLOWED_HOSTS }}" >> $GITHUB_ENV
+
+      - name: Run Backend Migrations
+        run: |
+          source venv/bin/activate
+          python manage.py migrate
+        working-directory: backend
+
+      - name: Run Backend Lint
+        run: |
+          source venv/bin/activate
+          flake8 .
+        working-directory: backend
+
+      - name: Run Backend Tests
+        run: |
+          source venv/bin/activate
+          python manage.py test
+        working-directory: backend
+
+  frontend-tests:
+    name: Frontend - React Lint & Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: "npm"
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install Frontend Dependencies
+        run: npm install
+        working-directory: frontend
+
+      - name: Run Frontend Lint
+        run: npm run lint
+        working-directory: frontend
+      
+      - name: Set up environment variables
+        run: |
+          echo "VITE_FIREBASE_API_KEY=${{ secrets.VITE_FIREBASE_API_KEY }}" >> $GITHUB_ENV
+          echo "VITE_FIREBASE_AUTH_DOMAIN=${{ secrets.VITE_FIREBASE_AUTH_DOMAIN }}" >> $GITHUB_ENV
+          echo "VITE_FIREBASE_PROJECT_ID=${{ secrets.VITE_FIREBASE_PROJECT_ID }}" >> $GITHUB_ENV
+          echo "VITE_FIREBASE_STORAGE_BUCKET=${{ secrets.VITE_FIREBASE_STORAGE_BUCKET }}" >> $GITHUB_ENV
+          echo "VITE_FIREBASE_MESSAGING_SENDER_ID=${{ secrets.VITE_FIREBASE_MESSAGING_SENDER_ID }}" >> $GITHUB_ENV
+          echo "VITE_FIREBASE_APP_ID=${{ secrets.VITE_FIREBASE_APP_ID }}" >> $GITHUB_ENV
+          echo "VITE_FIREBASE_MEASUREMENT_ID=${{ secrets.VITE_FIREBASE_MEASUREMENT_ID }}" >> $GITHUB_ENV
+
+      - name: Run Frontend Tests
+        run: npm test
+        working-directory: frontend
+
+  deploy-frontend:
+    name: Deploy Frontend to Vercel
+    needs: frontend-tests  # Runs only if frontend tests pass
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Vercel CLI
+        run: npm install -g vercel
+
+      - name: Deploy Frontend to Vercel
+        run: vercel --token=${{ secrets.VERCEL_TOKEN }} --prod
+        working-directory: frontend
+
+  deploy-backend:
+    name: Deploy Backend to Render
+    needs: backend-tests  # Runs only if backend tests pass
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Deploy to Render
+        run: curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK }}
+        working-directory: backend
