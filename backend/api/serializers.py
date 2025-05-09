@@ -3,6 +3,7 @@ from .models import User, Album, Photo
 
 
 class UserSerializer(serializers.ModelSerializer):
+    # UserSerializer
     album_count = serializers.SerializerMethodField()
 
     class Meta:
